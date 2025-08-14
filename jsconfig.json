@@ -9,6 +9,11 @@
       "@context/*": ["src/context/*"],
       "@redux/*": ["src/redux/*"],
       "@services/*": ["src/services/*"]
-    }
-  }
+    },
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src"]
 }

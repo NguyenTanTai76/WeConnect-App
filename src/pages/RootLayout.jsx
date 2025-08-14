@@ -3,15 +3,33 @@ import { Outlet } from "react-router-dom";
 
 // Supports weights 100-900
 import "@fontsource-variable/public-sans";
+import { Alert, Snackbar } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { closeSnackbar } from "@redux/slices/snackbarSlice";
 
 const RootLayout = () => {
+  const { open, message, type } = useSelector((state) => {
+    return state.snackbar;
+  });
+
+  const dispatch = useDispatch();
+
   return (
     <div>
       <Suspense fallback={<p>Loading...</p>}>
         <Outlet />
-        {/* <div>AABB</div> => sẽ đợi  */}
       </Suspense>
-      {/* <div>123</div> => mặc định sẽ hiển thị luôn */}
+      <Snackbar
+        open={open}
+        autoHideDuration={4000}
+        onClose={() => {
+          dispatch(closeSnackbar());
+        }}
+      >
+        <Alert severity={type} variant="filled" sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
