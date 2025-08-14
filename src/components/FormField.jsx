@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { Controller } from "react-hook-form";
 
-const FormField = ({ control, label, name, type, Component }) => {
+const FormField = ({ control, label, name, Component }) => {
   return (
     <div>
-      <p className="mb-1 text-sm font-bold text-dark-100">{label}</p>
+      <p className="mb-1 font-bold">{label}</p>
       <Controller
         name={name}
         control={control}
@@ -14,7 +13,6 @@ const FormField = ({ control, label, name, type, Component }) => {
               onChange={onChange}
               value={value}
               name={name}
-              type={type}
               control={control}
             />
           );

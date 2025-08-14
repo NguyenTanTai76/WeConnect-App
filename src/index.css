@@ -5,3 +5,9 @@
 body {
   font-family: "Public Sans Variable", sans-serif;
 }
+
+/* Xóa màu autofill của Chrome */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important; /* nền trắng */
+  -webkit-text-fill-color: #000 !important; /* màu chữ đen */
+}
