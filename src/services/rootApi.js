@@ -1,8 +1,34 @@
+import { logOut } from "@redux/slices/authSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: import.meta.env.VITE_BASE_URL,
+  prepareHeaders: (headers, { getState }) => {
+    // console.log({ store: getState() }); => là toàn bộ state hiện tại của Redux store
+    const token = getState().auth.accessToken;
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
+});
+
+const baseQueryWithForceLogout = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result?.error?.status === 401) {
+    api.dispatch(logOut());
+    // await persistor.purge();
+    window.location.href = "/login";
+  }
+
+  return result;
+};
 
 const rootApi = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BASE_URL }),
+  baseQuery: baseQueryWithForceLogout,
   endpoints: (builder) => {
     return {
       register: builder.mutation({
@@ -32,11 +58,18 @@ const rootApi = createApi({
           };
         },
       }),
+      getAuthUser: builder.query({
+        query: () => "/auth-user",
+      }),
     };
   },
 });
 
-export const { useRegisterMutation, useLoginMutation, useVerifyOTPMutation } =
-  rootApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useVerifyOTPMutation,
+  useGetAuthUserQuery,
+} = rootApi;
 
 export default rootApi;

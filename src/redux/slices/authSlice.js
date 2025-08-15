@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   accessToken: null,
   refreshToken: null,
+  userInfo: {},
 };
 
 const authSlice = createSlice({
@@ -13,12 +14,17 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
     },
-    logout: () => {},
+    logOut: () => {
+      return initialState;
+    },
+    saveUserInfo: (state, action) => {
+      state.userInfo = action.payload;
+    },
   },
 });
 
 // Tự động tạo ra action creators từ reducers
-export const { login, logout } = authSlice.actions;
+export const { login, logOut, saveUserInfo } = authSlice.actions;
 
 // Xuất reducers của slice để gộp vào store
 export default authSlice.reducer;
