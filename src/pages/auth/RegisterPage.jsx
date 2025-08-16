@@ -34,6 +34,11 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(formSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+    },
   });
 
   function onSubmit(formData) {

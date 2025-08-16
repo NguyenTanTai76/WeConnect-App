@@ -6,6 +6,7 @@ import "@fontsource-variable/public-sans";
 import { Alert, Snackbar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { closeSnackbar } from "@redux/slices/snackbarSlice";
+import Loading from "@components/Loading";
 
 const RootLayout = () => {
   const { open, message, type } = useSelector((state) => {
@@ -15,8 +16,8 @@ const RootLayout = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
-      <Suspense fallback={<p>Loading...</p>}>
+    <div className="text-dark-100">
+      <Suspense fallback={<Loading />}>
         <Outlet />
       </Suspense>
       <Snackbar

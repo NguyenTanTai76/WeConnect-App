@@ -1,8 +1,9 @@
+import Header from "@components/Header";
+import Loading from "@components/Loading";
 import { saveUserInfo } from "@redux/slices/authSlice";
 import { useGetAuthUserQuery } from "@services/rootApi";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
 const ProtectedLayout = () => {
@@ -18,10 +19,6 @@ const ProtectedLayout = () => {
       dispatch(saveUserInfo(response.data));
     }
   }, [response.isSuccess, dispatch, response.data]);
-
-  if (response.error?.code === 401) {
-    return <Navigate to="/login" />;
-  }
 
   // Phân biệt isLoading và isFetching:
   // Giống: đều là trạng thái boolean để bạn biết request đang diễn ra hay không
@@ -45,17 +42,16 @@ const ProtectedLayout = () => {
   */
 
   if (response.isLoading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
-  if (!response?.data?._id) {
-    return <Navigate to="/login" />;
-  }
+  // if (!response?.data?._id) {
+  //   return <Navigate to="/login" />;
+  // }
 
   return (
     <div>
-      <Link to="/">Home Page</Link>
-      <Link to="/message">Message Page</Link>
+      <Header />
       <Outlet />
     </div>
   );

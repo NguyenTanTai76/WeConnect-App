@@ -1,6 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "@redux/slices/authSlice";
 import snackbarReducer from "@redux/slices/snackbarSlice";
+import settingsReducer from "@redux/slices/settingsSlice";
+import dialogReducer from "@redux/slices/dialogSlice";
 
 import {
   persistReducer,
@@ -21,7 +23,13 @@ const persistConfig = {
   key: "root", // key lưu trong storage
   version: 1,
   storage, // nơi lưu (ở đây là localStorage)
-  blacklist: [rootApi.reducerPath], // Không lưu slice cache API
+  blacklist: [
+    rootApi.reducerPath,
+    // dialogReducer.reducerPath,
+    // settingsReducer.reducerPath,
+    "dialog",
+    "settings",
+  ], // Không lưu slice cache API
 };
 
 //  Tạo reducer đã persist
@@ -30,6 +38,8 @@ const persistedReducer = persistReducer(
   combineReducers({
     auth: authReducer,
     snackbar: snackbarReducer,
+    settings: settingsReducer,
+    dialog: dialogReducer,
     [rootApi.reducerPath]: rootApi.reducer,
   }),
 );

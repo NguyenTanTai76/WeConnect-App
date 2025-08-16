@@ -11,3 +11,9 @@ input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px white inset !important; /* nền trắng */
   -webkit-text-fill-color: #000 !important; /* màu chữ đen */
 }
+
+@layer components {
+  .card {
+    @apply rounded bg-white p-4 shadow;
+  }
+}
