@@ -17,9 +17,10 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
+  // Nếu accessToken hết hạn
   if (
-    result?.error?.status === 401 &&
-    result?.data?.message === "Token has expired."
+    result?.error?.status === 401
+    //  && result?.data?.message === "Token has expired."
   ) {
     const refreshToken = api.getState().auth.refreshToken;
 
@@ -34,17 +35,22 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         extraOptions,
       );
 
-      const newAccessToken = refreshResult?.data?.accessToken;
-
-      if (newAccessToken) {
+      if (refreshResult?.data?.accessToken) {
+        // Cập nhật lại Redux store
         api.dispatch(
           login({
-            accessToken: newAccessToken,
+            accessToken: refreshResult.data.accessToken,
             refreshToken,
           }),
         );
 
+        // Retry request ban đầu với accessToken mới
         result = await baseQuery(args, api, extraOptions);
+      } else {
+        // RefreshToken cũng fail → logout
+        api.dispatch(logOut());
+        window.location.href = "/login";
+        return refreshResult;
       }
     } else {
       api.dispatch(logOut());
