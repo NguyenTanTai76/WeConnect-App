@@ -64,6 +64,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 const rootApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
+  tagTypes: ["POSTS", "USERS"],
   endpoints: (builder) => {
     return {
       register: builder.mutation({
@@ -125,6 +126,33 @@ const rootApi = createApi({
         },
         providesTags: ["Posts"], // Gán nhãn "Posts" để nhớ danh sách
       }),
+      searchUsers: builder.query({
+        query: ({ limit, offset, searchQuery } = {}) => {
+          const encodeQuery = encodeURIComponent(searchQuery.trim());
+
+          return {
+            url: `/search/users/${encodeQuery}`,
+            params: { limit, offset, searchQuery },
+          };
+        },
+        providesTags: (result) =>
+          result
+            ? [
+                ...result.users.map(({ _id }) => ({ type: "USERS", id: _id })),
+                { type: "USERS", id: "LIST" },
+              ]
+            : [{ type: "USERS", id: "LIST" }],
+      }),
+      sendFriendRequest: builder.mutation({
+        query: (userId) => {
+          return {
+            url: "/friends/request",
+            method: "POST",
+            body: { friendId: userId },
+          };
+        },
+        invalidatesTags: (result, error, args) => [{ type: "USERS", id: args }],
+      }),
     };
   },
 });
@@ -137,6 +165,7 @@ export const {
   useGetAuthUserQuery,
   useCreatePostMutation,
   useGetPostsQuery,
+  useSearchUsersQuery,
 } = rootApi;
 
 export default rootApi;
